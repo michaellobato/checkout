@@ -1,11 +1,9 @@
-.theme1 .stuffToBuy ul {
-  list-style-type: none;
-}
-.theme1 .cart ul {
-  list-style-type: none;
-}
 .theme1 .cart input.ccNumber::-webkit-inner-spin-button,
 .theme1 .cart input.ccNumber::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+.theme1 .cart .ccForm .proceed {
+  float: right;
+  margin-top: 15px;
 }

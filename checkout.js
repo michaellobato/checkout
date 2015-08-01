@@ -29,17 +29,30 @@ angular.module("my-checkout").directive('stuffToBuy', ["$location", "StuffToBuyF
             restrict: 'E',
             //TODO: this should be in a template file
             template:
-            "<div class='stuffToBuy'>"+
-                "<h2>Buy my stuff please</h2>"+
+            "<div class='stuffToBuyContainer'>"+
+                "<div class='page-header'>"+
+                    "<h2>Buy my stuff please</h2>"+
+                "</div>"+
                 "<section>Select the things you wish to purchase</section>"+
-                "<ul>"+
-                    "<li ng-repeat='thing in stuffToBuy.stuff' class='thing'>"+
-                        "<span class='title'>{{thing.title}}</span>"+
-                        "<span class='price'>{{thing.price | currency}}</span>"+
-                        "<input ng-model='thing.inCart' type='checkbox' class='title'></input>"+
-                    "</li>"+
-                "</ul>"+
-                "<button type='button' ng-click='checkout()'>Checkout</button>"+
+                "<div class='col-md-3'>"+
+                    "<table class='table'>"+
+                        "<thead>"+
+                            "<tr>"+
+                                "<th></th>"+
+                                "<th>Thing</th>"+
+                                "<th>Price</th>"+
+                            "</tr>"+
+                        "</thead>"+
+                        "<tbody>"+
+                        "<tr ng-repeat='thing in stuffToBuy.stuff' class='thing trst-group-item'>"+
+                            "<td class='include'><input ng-model='thing.inCart' type='checkbox'></input></td>"+
+                            "<td class='title'>{{thing.title}}</td>"+
+                            "<td class='price'>{{thing.price | currency}}</td>"+
+                        "</tr>"+
+                        "</tbody>"+
+                    "</table>"+
+                "</div>"+
+                "<p class=''><button type='button' class='btn btn-primary' ng-click='checkout()'>Checkout</button></p>"+
             "</div>",
             replace: true,
             link: function($scope, iElm, iAttrs, controller) {
@@ -80,15 +93,15 @@ angular.module("my-checkout").factory('StuffToBuyFactory', ['$q',
             var fakeStuff = [{
                 id: "1",
                 title: "Good Thing",
-                price: Math.random() * (1.99 - 9.99) + 9.99
+                price: Math.random() * (1.99 - 3.99) + 3.99
             }, {
                 id: "2",
                 title: "Great Thing",
-                price: Math.random() * (1.99 - 9.99) + 9.99
+                price: Math.random() * (3.99 - 6.99) + 6.99
             }, {
                 id: "3",
                 title: "Best Thing",
-                price: Math.random() * (1.99 - 9.99) + 9.99
+                price: Math.random() * (7.99 - 9.99) + 9.99
             }];
 
             def.resolve(fakeStuff);
@@ -127,16 +140,32 @@ angular.module('my-checkout').directive('checkout', ["$location", "StuffToBuyFac
             restrict: 'E',
             template:
             "<div class='cart'>"+
-                "<h2>Pay me for the stuff Please!</h2>"+
-                "<ul>"+
-                    "<li ng-repeat='thing in stuffToBuy.stuff | filter:{inCart: true}' class='thing'>"+
-                        "<span class='title'>{{thing.title}}</span>"+
-                        "<span class='price'>{{thing.price | currency}}</span>"+
-                        "<span class='remove' ng-click='removeFromCart(thing)'>Remove</span>"+
-                    "</li>"+
-                "</ul>"+
-                "<credit-card-info subTotal='{{subTotal}}' ng-if='!isCartEmtpy()'></credit-card-info>"+
-                "<span class='subTotal'>Total: {{subTotal | currency}}</span>"+
+                "<div class='page-header'>"+
+                    "<h2>Pay me for the stuff Please!</h2>"+
+                "</div>"+
+                //TODO: this should be in a reusable template
+                "<div class='col-md-3'>"+
+                    "<table class='table'>"+
+                        "<thead>"+
+                            "<tr>"+
+                                "<th>Thing</th>"+
+                                "<th>Price</th>"+
+                                "<th></th>"+
+                            "</tr>"+
+                        "</thead>"+
+                        "<tbody>"+
+                        "<tr ng-repeat='thing in stuffToBuy.stuff | filter:{inCart: true}' class='thing trst-group-item'>"+
+                            "<td class='title'>{{thing.title}}</td>"+
+                            "<td class='price'>{{thing.price | currency}}</td>"+
+                            "<td class='remove'><button type='button' class='btn btn-xs btn-warning'>Remove</button></td>"+
+                        "</tr>"+
+                        "</tbody>"+
+                    "</table>"+
+                "</div>"+
+                "<div>"+
+                    "<credit-card-info subTotal='{{subTotal}}' ng-if='!isCartEmtpy()'></credit-card-info>"+
+                    "<span class='subTotal'>Total: {{subTotal | currency}}</span>"+
+                "</div>"+
             "</div>",
             replace: true,
             link: function($scope, iElm, iAttrs) {
@@ -170,9 +199,9 @@ angular.module('my-checkout').directive('creditCardInfo', ['$location', 'StuffTo
         },
         restrict: 'E',
         template:
-        "<form name='ccForm' ng-submit='proceed()'>"+
-            "<input name='ccNumber' type='number' placeholder='credit card number' class='ccNumber' ng-model='creditCardNumber' required></input>"+
-            "<button type='submit'>Proceed</button>"+
+        "<form class='ccForm' name='ccForm' ng-submit='proceed()'>"+
+            "<input name='ccNumber' type='number' placeholder='Credit Card Number' class='ccNumber' ng-model='creditCardNumber' required></input>"+
+            "<p><button class='btn btn-primary proceed' type='submit'>Proceed</button></p>"+
         "</form>",
         link: function($scope, iElm, iAttrs, controller) {
             $scope.proceed = function() {
