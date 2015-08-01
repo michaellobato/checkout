@@ -4,3 +4,8 @@
 .theme1 .cart ul {
   list-style-type: none;
 }
+.theme1 .cart input.ccNumber::-webkit-inner-spin-button,
+.theme1 .cart input.ccNumber::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

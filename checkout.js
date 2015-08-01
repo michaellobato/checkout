@@ -11,10 +11,10 @@ angular.module("my-checkout").config(['$routeProvider',
             //TODO: prevent naving to this url if appropriate.
             //TODO: this should be in a template file
             template: "<checkout></checkout>"
-        }).when("/stuffToBuy/checkout/payment", {
+        }).when("/stuffToBuy/checkout/thankYou", {
             //TODO: prevent naving to this url if appropriate.
             //TODO: this should be in a template file
-            template: "<credit-card-info></credit-card-info>"
+            template: "<div>Thank you for your purchase!</div>"
         }).
         otherwise({
             redirectTo: '/stuffToBuy'
@@ -110,6 +110,12 @@ angular.module("my-checkout").factory('StuffToBuyFactory', ['$q',
             }, 0);
         };
 
+        instance.clearCart = function() {
+            _.each(stuffToBuy.stuff, function(thing) {
+                thing.inCart = false;
+            });
+        }
+
         return instance;
     }
 ]);
@@ -129,8 +135,8 @@ angular.module('my-checkout').directive('checkout', ["$location", "StuffToBuyFac
                         "<span class='remove' ng-click='removeFromCart(thing)'>Remove</span>"+
                     "</li>"+
                 "</ul>"+
-                "<span class='subTotal'>{{subTotal | currency}}</span>"+
-                "<button type='button' ng-disabled='isCartEmtpy()' ng-click='proceed()'>Proceed</button>"+
+                "<credit-card-info subTotal='{{subTotal}}' ng-if='!isCartEmtpy()'></credit-card-info>"+
+                "<span class='subTotal'>Total: {{subTotal | currency}}</span>"+
             "</div>",
             replace: true,
             link: function($scope, iElm, iAttrs) {
@@ -150,33 +156,34 @@ angular.module('my-checkout').directive('checkout', ["$location", "StuffToBuyFac
                     thing.inCart = false;
                     $scope.subTotal = StuffToBuyFactory.calcSubTotal();
                 };
-
-                $scope.proceed = function() {
-                    $location.path("/stuffToBuy/checkout/payment");
-                }
             }
         };
     }
 ]);
 
-angular.module('my-checkout').directive('creditCardInfo', ['$q', 'StuffToBuyFactory',
-    function($q, StuffToBuyFactory){
+angular.module('my-checkout').directive('creditCardInfo', ['$location', 'StuffToBuyFactory',
+    function($location, StuffToBuyFactory){
     // Runs during compile
     return {
-        scope: {},
+        scope: {
+            subTotal: "="
+        },
         restrict: 'E',
         template:
-        "<div>CREDIT CARD INFO</div>",
-        // templateUrl: '',
-        // replace: true,
-        // transclude: true,
-        // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
+        "<form name='ccForm' ng-submit='proceed()'>"+
+            "<input name='ccNumber' type='number' placeholder='credit card number' class='ccNumber' ng-model='creditCardNumber' required></input>"+
+            "<button type='submit'>Proceed</button>"+
+        "</form>",
         link: function($scope, iElm, iAttrs, controller) {
-            $scope.subTotal = StuffToBuyFactory.calcSubTotal();
             $scope.proceed = function() {
-                //TODO: navigate to done page
-                //TODO: invalidate cart page?
-                //TODO: remove items from cart
+                //TODO: write proper validation for the ccnumber?
+                //TODO: implement a payment service to send all this info to server.
+                //paymentService.processTransaction().then() {
+                var subTotal = StuffToBuyFactory.calcSubTotal();
+                StuffToBuyFactory.clearCart();
+                $scope.creditCardNumber = null;
+                $location.path("/stuffToBuy/checkout/thankYou");
+                //});
             }
         }
     };
