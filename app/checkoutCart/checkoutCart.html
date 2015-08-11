@@ -1,0 +1,27 @@
+<div class='cart grid'>
+    <div class='page-header'>
+        <h2>Pay me for the stuff Please!</h2>
+    </div>
+    <div class='row'>
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th>Thing</th>
+                    <th>Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat='thing in stuffToBuy.stuff | filter:{inCart: true}' class='thing trst-group-item'>
+                <td class='title'>{{thing.title}}</td>
+                <td class='price'>{{thing.price | currency}}</td>
+                <td class='remove'><button type='button' class='btn btn-xs btn-warning' ng-click="removeFromCart(thing)">Remove</button></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <credit-card-info subTotal='{{subTotal}}' ng-if='!isCartEmtpy()'></credit-card-info>
+        <span class='subTotal'>Total: {{subTotal | currency}}</span>
+    </div>
+</div>

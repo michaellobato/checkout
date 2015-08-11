@@ -1,0 +1,25 @@
+<div class='stuffToBuyContainer grid'>
+    <div class='page-header'>
+        <h2>Buy my stuff please</h2>
+    </div>
+    <section>Select the things you wish to purchase</section>
+    <div class='row'>
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Thing</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat='thing in stuffToBuy.stuff' class='thing trst-group-item'>
+                <td class='include'><input ng-model='thing.inCart' type='checkbox'></input></td>
+                <td class='title'>{{thing.title}}</td>
+                <td class='price'>{{thing.price | currency}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row"><button type='button' class='btn btn-primary' ng-click='checkout()'>Checkout</button></div>
+</div>
